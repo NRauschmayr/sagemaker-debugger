@@ -40,7 +40,6 @@ def get_keras_model_v2():
 def get_keras_data():
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
-    x_train, x_test = x_train / 255, x_test / 255
 
     return (x_train, y_train), (x_test, y_test)
 
@@ -54,6 +53,7 @@ def helper_test_keras_v2(script_mode: bool = False, eager_mode: bool = True):
     with SagemakerSimulator() as sim:
         model = get_keras_model_v2()
         (x_train, y_train), (x_test, y_test) = get_keras_data()
+        x_train, x_test = x_train / 255, x_test / 255
 
         opt = tf.keras.optimizers.RMSprop()
         if script_mode:
@@ -63,14 +63,14 @@ def helper_test_keras_v2(script_mode: bool = False, eager_mode: bool = True):
                 loss="sparse_categorical_crossentropy", optimizer=opt, metrics=["accuracy"]
             )
             history = model.fit(
-                x_train, y_train, batch_size=64, epochs=5, validation_split=0.2, callbacks=[hook]
+                x_train, y_train, batch_size=64, epochs=2, validation_split=0.2, callbacks=[hook]
             )
             test_scores = model.evaluate(x_test, y_test, verbose=2, callbacks=[hook])
         else:
             model.compile(
                 loss="sparse_categorical_crossentropy", optimizer=opt, metrics=["accuracy"]
             )
-            history = model.fit(x_train, y_train, batch_size=64, epochs=5, validation_split=0.2)
+            history = model.fit(x_train, y_train, batch_size=64, epochs=2, validation_split=0.2)
             test_scores = model.evaluate(x_test, y_test, verbose=2)
 
         hook = smd.get_hook()
@@ -94,6 +94,7 @@ def helper_test_keras_v2_json_config(
     with SagemakerSimulator(json_file_contents=json_file_contents) as sim:
         model = get_keras_model_v2()
         (x_train, y_train), (x_test, y_test) = get_keras_data()
+        x_train, x_test = x_train / 255, x_test / 255
 
         opt = tf.keras.optimizers.RMSprop()
         if script_mode:
@@ -103,14 +104,14 @@ def helper_test_keras_v2_json_config(
                 loss="sparse_categorical_crossentropy", optimizer=opt, metrics=["accuracy"]
             )
             history = model.fit(
-                x_train, y_train, batch_size=64, epochs=5, validation_split=0.2, callbacks=[hook]
+                x_train, y_train, batch_size=64, epochs=2, validation_split=0.2, callbacks=[hook]
             )
             test_scores = model.evaluate(x_test, y_test, verbose=2, callbacks=[hook])
         else:
             model.compile(
                 loss="sparse_categorical_crossentropy", optimizer=opt, metrics=["accuracy"]
             )
-            history = model.fit(x_train, y_train, epochs=5, batch_size=64, validation_split=0.2)
+            history = model.fit(x_train, y_train, epochs=2, batch_size=64, validation_split=0.2)
             test_scores = model.evaluate(x_test, y_test, verbose=2)
 
         hook = smd.get_hook()
