@@ -28,6 +28,9 @@ class Rule(ABC):
     def set_required_tensors(self, step):
         pass
 
+    def invoke_for_timerange(self, start_timestamp, end_timestamp):
+        pass
+
     # step here is global step
     @abstractmethod
     def invoke_at_step(self, step):
