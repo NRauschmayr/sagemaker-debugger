@@ -387,7 +387,7 @@ class Tensor:
             modes.GLOBAL, modes.TRAIN, modes.EVAL, modes.PREDICT
         :return: a list of step numbers
         """
-        steps = self.steps(mode=mode)
+        steps = self.trial.steps(mode=mode)
         i = bisect.bisect_right(steps, step)
         prev_steps = steps[:i]
         if n:
